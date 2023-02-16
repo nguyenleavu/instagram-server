@@ -147,10 +147,7 @@ const getAllPost = async (req, res) => {
                             },
                         ],
                     },
-                ],
-                where: {
-                    user_id: { [Op.in]: followingId },
-                },
+                ],               
                 order: [['createdAt', 'DESC']],
             });
             return res.status(200).send(postList);

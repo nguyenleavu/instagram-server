@@ -57,9 +57,6 @@ module.exports = (sequelize, DataTypes) => {
             },
             gender: {
                 type: DataTypes.STRING,
-                validate: {
-                    isIn: [['Female', 'Male', 'Other']],
-                },
             },
             bio: {
                 type: DataTypes.STRING,

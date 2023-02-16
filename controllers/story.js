@@ -25,7 +25,7 @@ const createStory = async (req, res) => {
 
 const getAllStory = async (req, res) => {
     const { user } = req;
-    await sequelize.query(`set global sql_mode = ''`);
+    await sequelize.query(`SET GLOBAL sql_mode=''`);
     try {
         const storyList = await Story.findAll({
             attributes: ['user_id', 'createdAt', 'id'],
@@ -52,6 +52,7 @@ const getAllStory = async (req, res) => {
             limit: 20,
             order: [['createdAt', 'DESC']],
         });
+        await sequelize.query(`SET GLOBAL sql_mode=''`);
 
         return res.status(200).send(storyList);
     } catch (error) {

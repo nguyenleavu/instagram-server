@@ -2,9 +2,11 @@ const {
     User,
     Follower,
     Like,
-    sequelizem,
     Post,
     Comment,
+    Story,
+    StoryStatus,
+    sequelize,
 } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -100,17 +102,15 @@ const uploadAvatar = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const { user } = req;
-    const { full_name, user_name, bio, email, phone, gender } = req.body;
+    const { bio, email, phone, gender } = req.body;
 
     try {
-        if (full_name && user_name && bio && email && phone && gender) {
+        if (bio && email && phone && gender) {
             const currentUser = await User.findOne({
                 where: { id: user.id },
                 attributes: { exclude: ['password', 'avatar', 'tick'] },
             });
 
-            currentUser.full_name = full_name;
-            currentUser.user_name = user_name;
             currentUser.email = email;
             currentUser.phone = phone;
             currentUser.gender = gender;
@@ -189,10 +189,10 @@ const getDetailUser = async (req, res) => {
                     model: Follower,
                     as: 'followings',
                     attributes: ['follower_user_id'],
-                },               
+                },
                 {
                     model: Post,
-                    attributes: ['media_file'],
+                    attributes: ['media_file','id'],
                     include: [
                         {
                             model: Like,
@@ -202,6 +202,18 @@ const getDetailUser = async (req, res) => {
                         {
                             model: Comment,
                             as: 'comments',
+                            attributes: ['user_id'],
+                        },
+                    ],
+                },
+                {
+                    model: Story,
+                    attributes: ['id', 'story_file', 'createdAt'],
+                    order: [['createdAt', 'DESC']],
+                    include: [
+                        {
+                            model: StoryStatus,
+                            as: 'isSeen',
                             attributes: ['user_id'],
                         },
                     ],
